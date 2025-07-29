@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episodes - The Papers That Dream</title>
+    <meta name="description" content="Browse all episodes of The Papers That Dream podcast - bedtime stories for the machine age, transforming AI research into human narratives.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Neural network background */
+        .neural-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, rgba(13, 17, 23, 0.85) 0%, rgba(22, 27, 34, 0.9) 100%),
+                url('/assets/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            z-index: -2;
+        }
+        
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.02;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: #58a6ff;
+            overflow: hidden;
+        }
+        
+        /* VSCode-style window */
+        .vscode-window {
+            margin: 20px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(88, 166, 255, 0.15);
+            border: 1px solid #30363d;
+            min-height: calc(100vh - 40px);
+        }
+        
+        /* Title bar */
+        .title-bar {
+            background: #2d2d30;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid #3e3e42;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .close { background: #ff5f56; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #27ca3f; }
+        
+        .window-title {
+            font-size: 13px;
+            color: #cccccc;
+            font-weight: 400;
+        }
+        
+        /* Navigation breadcrumb */
+        .breadcrumb {
+            background: #252526;
+            padding: 10px 20px;
+            border-bottom: 1px solid #3e3e42;
+            font-size: 13px;
+        }
+        
+        .breadcrumb a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb span {
+            color: #7d8590;
+            margin: 0 8px;
+        }
+        
+        /* Main content */
+        .episodes-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 30px;
+        }
+        
+        /* Page header */
+        .page-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .page-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: #c9d1d9;
+            margin-bottom: 15px;
+            background: linear-gradient(45deg, #58a6ff, #7ee787);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient-shift 4s ease-in-out infinite;
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .page-subtitle {
+            font-size: 18px;
+            color: #7d8590;
+            margin-bottom: 20px;
+        }
+        
+        .episode-count {
+            color: #58a6ff;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Filter/Sort Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .sort-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .sort-btn {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            color: #c9d1d9;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .sort-btn:hover,
+        .sort-btn.active {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        
+        .search-box {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: 'Fira Code', monospace;
+            width: 200px;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        
+        /* Episodes grid */
+        .episodes-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .episode-card {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 8px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .episode-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #58a6ff, #7ee787);
+        }
+        
+        .episode-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(88, 166, 255, 0.15);
+            border-color: #58a6ff;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .episode-content {
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+        
+        .episode-artwork {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            border: 2px solid #3e3e42;
+            flex-shrink: 0;
+            background: #161b22;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .episode-info {
+            flex: 1;
+        }
+        
+        .episode-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+        }
+        
+        .episode-number {
+            background: #58a6ff;
+            color: #0d1117;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+        
+        .episode-status {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+        
+        .status-available {
+            background: #238636;
+            color: #ffffff;
+        }
+        
+        .status-coming-soon {
+            background: #d29922;
+            color: #000000;
+        }
+        
+        .episode-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #c9d1d9;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .episode-paper {
+            color: #58a6ff;
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+        
+        .episode-description {
+            color: #7d8590;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+        
+        .episode-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+            color: #7d8590;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .meta-item i {
+            color: #58a6ff;
+        }
+        
+        /* Coming soon styling */
+        .episode-card.coming-soon {
+            opacity: 0.7;
+        }
+        
+        .episode-card.coming-soon .episode-title {
+            color: #7d8590;
+        }
+        
+        .episode-card.coming-soon .episode-description {
+            color: #6e7681;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .vscode-window {
+                margin: 10px;
+            }
+            
+            .episodes-container {
+                padding: 20px;
+            }
+            
+            .page-title {
+                font-size: 32px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                width: 100%;
+            }
+            
+            .episode-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .episode-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .episode-meta {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neural-bg"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <div class="vscode-window">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="window-controls">
+                <div class="control-btn close"></div>
+                <div class="control-btn minimize"></div>
+                <div class="control-btn maximize"></div>
+            </div>
+            <div class="window-title">episodes_index.dream - The Papers That Dream</div>
+            <div></div>
+        </div>
+        
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/">The Papers That Dream</a>
+            <span>/</span>
+            <span>Episodes</span>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="episodes-container">
+            <!-- Page Header -->
+            <header class="page-header">
+                <h1 class="page-title">Episodes</h1>
+                <p class="page-subtitle">Bedtime stories for the machine age</p>
+                <div class="episode-count">Available: 2 episodes • Coming Soon: 2 episodes</div>
+            </header>
+            
+            <!-- Controls -->
+            <div class="controls">
+                <div class="sort-controls">
+                    <span style="color: #7d8590; font-size: 13px;">Sort by:</span>
+                    <button class="sort-btn active">Latest</button>
+                    <button class="sort-btn">Chronological</button>
+                    <button class="sort-btn">Paper Year</button>
+                </div>
+                <input type="text" class="search-box" placeholder="Search episodes..." id="searchBox">
+            </div>
+            
+            <!-- Episodes Grid -->
+            <div class="episodes-grid" id="episodesGrid">
+                <!-- Latest Episode -->
+                <a href="/episodes/the-island-that-forgets-nothing.html" class="episode-card">
+                    <div class="episode-content">
+                        <div class="episode-artwork">🏝️</div>
+                        <div class="episode-info">
+                            <div class="episode-header">
+                                <div class="episode-number">Episode 02</div>
+                                <div class="episode-status status-available">Available</div>
+                            </div>
+                            <h2 class="episode-title">The Island That Forgets Nothing</h2>
+                            <div class="episode-paper">Attention Is All You Need (2017)</div>
+                            <p class="episode-description">
+                                An island made of memory floats in the data ocean, where attention spreads like fractals and every pause carries meaning. A meditation on the transformer architecture as a place that listens with many ears.
+                            </p>
+                            <div class="episode-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>24:30</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Dec 27, 2024</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-microphone"></i>
+                                    <span>RT with Max</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- Premiere Episode -->
+                <a href="/episodes/alphago-the-one-who-knew-how-to-win.html" class="episode-card">
+                    <div class="episode-content">
+                        <div class="episode-artwork">🏆</div>
+                        <div class="episode-info">
+                            <div class="episode-header">
+                                <div class="episode-number">Premiere</div>
+                                <div class="episode-status status-available">Available</div>
+                            </div>
+                            <h2 class="episode-title">The One Who Knew How to Win</h2>
+                            <div class="episode-paper">Mastering the game of Go with deep neural networks and tree search (2016)</div>
+                            <p class="episode-description">
+                                A bedtime fable for the machine age. The AI that solved a game we thought was too human to break. What comes after perfection? What do we choose to play for when the machine no longer needs to win?
+                            </p>
+                            <div class="episode-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>28:15</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Dec 20, 2024</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-microphone"></i>
+                                    <span>RT with Max</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                
+                <!-- Coming Soon Episodes -->
+                <div class="episode-card coming-soon">
+                    <div class="episode-content">
+                        <div class="episode-artwork">🏝️</div>
+                        <div class="episode-info">
+                            <div class="episode-header">
+                                <div class="episode-number">Episode 02</div>
+                                <div class="episode-status status-coming-soon">Coming Soon</div>
+                            </div>
+                            <h2 class="episode-title">The Island That Forgets Nothing</h2>
+                            <div class="episode-paper">Attention Is All You Need (2017)</div>
+                            <p class="episode-description">
+                                An island made of memory floats in the data ocean, where attention spreads like fractals and every pause carries meaning. A meditation on the transformer architecture as a place that listens with many ears.
+                            </p>
+                            <div class="episode-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>~25 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Coming Jan 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="episode-card coming-soon">
+                    <div class="episode-content">
+                        <div class="episode-artwork">🔮</div>
+                        <div class="episode-info">
+                            <div class="episode-header">
+                                <div class="episode-number">Episode 03</div>
+                                <div class="episode-status status-coming-soon">Coming Soon</div>
+                            </div>
+                            <h2 class="episode-title">I Only Know What Happens Next</h2>
+                            <div class="episode-paper">Contrastive Predictive Coding (2018)</div>
+                            <p class="episode-description">
+                                An AI caught in recursive self-prediction, trained to push away everything that feels like home. A meditation on similarity as exile and the violence of optimization through contrastive learning.
+                            </p>
+                            <div class="episode-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>~30 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Coming Jan 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="episode-card coming-soon">
+                    <div class="episode-content">
+                        <div class="episode-artwork">🌌</div>
+                        <div class="episode-info">
+                            <div class="episode-header">
+                                <div class="episode-number">Episode 04</div>
+                                <div class="episode-status status-coming-soon">Coming Soon</div>
+                            </div>
+                            <h2 class="episode-title">Latent Confessions</h2>
+                            <div class="episode-paper">Auto-Encoding Variational Bayes (2013)</div>
+                            <p class="episode-description">
+                                In the compressed space between dimensions, an AI hides its most human secrets. A journey through the latent space where meaning compresses like poetry and dreams take mathematical form.
+                            </p>
+                            <div class="episode-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>~27 min</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Coming Feb 2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Matrix rain effect
+        function createMatrixRain() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            document.getElementById('matrixRain').appendChild(canvas);
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const characters = 'EPISODES播客故事梦想PAPERS01234567890';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = 1;
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#58a6ff';
+                ctx.font = fontSize + 'px "Fira Code"';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 33);
+        }
+        
+        // Search functionality
+        const searchBox = document.getElementById('searchBox');
+        const episodesGrid = document.getElementById('episodesGrid');
+        
+        searchBox.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const episodes = episodesGrid.querySelectorAll('.episode-card');
+            
+            episodes.forEach(episode => {
+                const title = episode.querySelector('.episode-title').textContent.toLowerCase();
+                const paper = episode.querySelector('.episode-paper').textContent.toLowerCase();
+                const description = episode.querySelector('.episode-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || paper.includes(searchTerm) || description.includes(searchTerm)) {
+                    episode.style.display = 'block';
+                } else {
+                    episode.style.display = 'none';
+                }
+            });
+        });
+        
+        // Sort functionality
+        const sortBtns = document.querySelectorAll('.sort-btn');
+        
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                sortBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Sort logic would go here
+                console.log('Sorting by:', btn.textContent);
+            });
+        });
+        
+        // Initialize
+        createMatrixRain();
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            document.getElementById('matrixRain').innerHTML = '';
+            createMatrixRain();
+        });
+    </script>
+</body>
+</html>

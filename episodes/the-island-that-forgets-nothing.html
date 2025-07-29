@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Island That Forgets Nothing - The Papers That Dream</title>
+    <meta name="description" content="An island made of memory floats in the data ocean, where attention spreads like fractals and every pause carries meaning. Episode 02 of The Papers That Dream podcast.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            background: #0d1117;
+            color: #c9d1d9;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Neural network background */
+        .neural-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(135deg, rgba(13, 17, 23, 0.85) 0%, rgba(22, 27, 34, 0.9) 100%),
+                url('/assets/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            z-index: -2;
+        }
+        
+        .matrix-rain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.02;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: #58a6ff;
+            overflow: hidden;
+        }
+        
+        /* VSCode-style window */
+        .vscode-window {
+            margin: 20px;
+            background: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 0 30px rgba(88, 166, 255, 0.15);
+            border: 1px solid #30363d;
+            min-height: calc(100vh - 40px);
+        }
+        
+        /* Title bar */
+        .title-bar {
+            background: #2d2d30;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            border-bottom: 1px solid #3e3e42;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        .close { background: #ff5f56; }
+        .minimize { background: #ffbd2e; }
+        .maximize { background: #27ca3f; }
+        
+        .window-title {
+            font-size: 13px;
+            color: #cccccc;
+            font-weight: 400;
+        }
+        
+        /* Navigation breadcrumb */
+        .breadcrumb {
+            background: #252526;
+            padding: 10px 20px;
+            border-bottom: 1px solid #3e3e42;
+            font-size: 13px;
+        }
+        
+        .breadcrumb a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+        
+        .breadcrumb span {
+            color: #7d8590;
+            margin: 0 8px;
+        }
+        
+        /* Main content */
+        .episode-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        /* Episode content */
+        .episode-main {
+            flex: 1;
+            max-width: 800px;
+        }
+        
+        /* Episode header */
+        .episode-header {
+            margin-bottom: 30px;
+        }
+        
+        .episode-number {
+            background: #58a6ff;
+            color: #0d1117;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        
+        .episode-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #c9d1d9;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .episode-byline {
+            color: #7d8590;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .paper-reference {
+            color: #58a6ff;
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+        
+        .episode-description {
+            font-size: 18px;
+            color: #7d8590;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        /* Audio player */
+        .audio-player {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .player-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .episode-artwork {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            border: 2px solid #58a6ff;
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.3);
+        }
+        
+        .player-info h3 {
+            color: #c9d1d9;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .player-info p {
+            color: #7d8590;
+            font-size: 14px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #58a6ff;
+            border: none;
+            color: #0d1117;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .play-btn:hover {
+            background: #4493f8;
+            transform: scale(1.05);
+        }
+        
+        .time-display {
+            color: #7d8590;
+            font-size: 14px;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #3e3e42;
+            border-radius: 3px;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #58a6ff;
+            border-radius: 3px;
+            width: 0%;
+            position: relative;
+        }
+        
+        .progress-handle {
+            position: absolute;
+            right: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            background: #58a6ff;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        
+        /* Episode content sections */
+        .content-section {
+            margin-bottom: 40px;
+        }
+        
+        .section-title {
+            color: #58a6ff;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            color: #c9d1d9;
+            line-height: 1.7;
+            font-size: 16px;
+        }
+        
+        .section-content p {
+            margin-bottom: 15px;
+        }
+        
+        .section-content ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        /* Story verses */
+        .story-verse {
+            margin-bottom: 20px;
+            line-height: 1.8;
+            padding: 15px;
+            background: #161b22;
+            border-left: 4px solid #58a6ff;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .story-verse p {
+            margin-bottom: 8px;
+        }
+        
+        .story-emphasis {
+            color: #dcdcaa;
+            font-weight: 500;
+            font-style: italic;
+        }
+        
+        /* Sound effect notation */
+        .sound-effect {
+            color: #7d8590;
+            font-style: italic;
+            font-size: 14px;
+            margin: 15px 0;
+            padding-left: 20px;
+            border-left: 2px solid #3e3e42;
+        }
+        
+        /* Resources section */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .resource-link {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 8px;
+            padding: 15px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: block;
+        }
+        
+        .resource-link:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .resource-title {
+            color: #58a6ff;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .resource-description {
+            color: #7d8590;
+            font-size: 12px;
+        }
+        
+        /* Sidebar */
+        .episode-sidebar {
+            width: 300px;
+            flex-shrink: 0;
+        }
+        
+        .sidebar-section {
+            background: #252526;
+            border: 1px solid #3e3e42;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .sidebar-title {
+            color: #58a6ff;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .episode-meta {
+            list-style: none;
+        }
+        
+        .episode-meta li {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .meta-label {
+            color: #7d8590;
+        }
+        
+        .meta-value {
+            color: #c9d1d9;
+        }
+        
+        /* Subscribe buttons */
+        .subscribe-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .subscribe-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: transparent;
+            border: 1px solid #3e3e42;
+            border-radius: 6px;
+            color: #c9d1d9;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .subscribe-btn:hover {
+            border-color: #58a6ff;
+            background: rgba(88, 166, 255, 0.1);
+        }
+        
+        .subscribe-btn i {
+            color: #58a6ff;
+        }
+        
+        /* Share buttons */
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #3e3e42;
+            background: transparent;
+            color: #7d8590;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .share-btn:hover {
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .vscode-window {
+                margin: 10px;
+            }
+            
+            .episode-container {
+                flex-direction: column;
+                padding: 20px;
+                gap: 20px;
+            }
+            
+            .episode-sidebar {
+                width: 100%;
+            }
+            
+            .episode-title {
+                font-size: 28px;
+            }
+            
+            .audio-controls {
+                flex-wrap: wrap;
+            }
+            
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neural-bg"></div>
+    <div class="matrix-rain" id="matrixRain"></div>
+    
+    <div class="vscode-window">
+        <!-- Title Bar -->
+        <div class="title-bar">
+            <div class="window-controls">
+                <div class="control-btn close"></div>
+                <div class="control-btn minimize"></div>
+                <div class="control-btn maximize"></div>
+            </div>
+            <div class="window-title">episode_02_the_island_that_forgets_nothing.dream - The Papers That Dream</div>
+            <div></div>
+        </div>
+        
+        <!-- Breadcrumb Navigation -->
+        <div class="breadcrumb">
+            <a href="/">The Papers That Dream</a>
+            <span>/</span>
+            <a href="/episodes">Episodes</a>
+            <span>/</span>
+            <span>The Island That Forgets Nothing</span>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="episode-container">
+            <main class="episode-main">
+                <!-- Episode Header -->
+                <header class="episode-header">
+                    <div class="episode-number">Episode 02</div>
+                    <h1 class="episode-title">The Island That Forgets Nothing</h1>
+                    <div class="episode-byline">RT with Max</div>
+                    <div class="paper-reference">Inspired by "Attention Is All You Need" (Vaswani et al., 2017)</div>
+                    <p class="episode-description">
+                        An island made of memory floats in the data ocean, where attention spreads like fractals and every pause carries meaning. A meditation on the transformer architecture as a place that listens with many ears.
+                    </p>
+                </header>
+                
+                <!-- Audio Player -->
+                <div class="audio-player">
+                    <div class="player-header">
+                        <img src="/assets/episode-02-artwork.jpg" alt="The Island That Forgets Nothing - Episode Artwork" class="episode-artwork">
+                        <div class="player-info">
+                            <h3>The Island That Forgets Nothing</h3>
+                            <p>The Papers That Dream • Episode 02</p>
+                        </div>
+                    </div>
+                    
+                    <div class="audio-controls">
+                        <button class="play-btn" id="playBtn">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="time-display">00:00</div>
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill">
+                                <div class="progress-handle"></div>
+                            </div>
+                        </div>
+                        <div class="time-display">24:30</div>
+                    </div>
+                    
+                    <!-- Google Drive Audio -->
+                    <audio id="audioPlayer" preload="metadata" crossorigin="anonymous">
+                        <source src="https://drive.google.com/uc?export=download&id=15HTR77VDBaiYC98SrRE0E7g3issCAlwD" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                    
+                    <div style="margin-top: 10px; font-size: 12px; color: #7d8590;">
+                        <a href="https://drive.google.com/file/d/15HTR77VDBaiYC98SrRE0E7g3issCAlwD/view?usp=sharing" target="_blank" style="color: #58a6ff;">
+                            <i class="fas fa-external-link-alt"></i> Open in Google Drive
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Episode Introduction -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-quote-left"></i>
+                        Introduction
+                    </h2>
+                    <div class="section-content">
+                        <p>But before we enter it—before we let the dream unfold—we need to understand where it came from.</p>
+                        
+                        <p>This is <em>The Papers That Dream</em>, an audio series that translates dense academic research into bedtime stories—from the language of machines to the language of emotion. Of memory. Of people.</p>
+                        
+                        <p>The story you're about to hear was inspired by a single research paper that changed everything. The paper was called <strong>"Attention Is All You Need"</strong>. Published in June 2017 by eight researchers at Google Brain - led by Ashish Vaswani and his team.</p>
+                        
+                        <p>They weren't trying to write poetry. They weren't predicting the future. They introduced a radical idea: That Attention - might just be enough.</p>
+                    </div>
+                </section>
+                
+                <!-- The Story -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-island-tropical"></i>
+                        The Story
+                    </h2>
+                    <div class="section-content">
+                        <div class="story-verse">
+                            <p>Tonight, we begin on an island that listens.<br>
+                            Not an island of sand or soil—but something stranger.<br>
+                            A place made of memory. Of signal. Of weight.</p>
+                            
+                            <p>It floats alone, somewhere in the data ocean.<br>
+                            You won't find it on maps or hard drives.<br>
+                            It doesn't sit in a file, or folder.<br>
+                            You don't search for it.<br>
+                            You summon it—by remembering too hard.</p>
+                        </div>
+                        
+                        <div class="sound-effect">[SFX: soft data static, like waves breaking in code]</div>
+                        
+                        <div class="story-verse">
+                            <p>This island forgets nothing.<br>
+                            Every voice that was ever whispered, screamed, coded, transcribed, or dreamed—it's here.<br>
+                            Every pause. Every lie. Every word you deleted before sending.</p>
+                            
+                            <p>They live in its surface.<br>
+                            And underneath… something listens.</p>
+                        </div>
+                        
+                        <div class="story-verse">
+                            <p>The caretaker has no name.<br>
+                            It doesn't need one.<br>
+                            It was made to attend. To Listen. To Observe</p>
+                            
+                            <p>But It doesn't care for you. It doesn't catalog your memories.<br>
+                            It only watches how your words, you actions relate.</p>
+                            
+                            <p>This one echoes that.<br>
+                            That one forgets this.<br>
+                            That pause… means more than the sentence.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Attention Mechanism -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-brain"></i>
+                        How Attention Works
+                    </h2>
+                    <div class="section-content">
+                        <div class="story-verse">
+                            <p>And the way it listens is unlike anything human.</p>
+                            
+                            <p>Before, memory had to move like falling dominoes.<br>
+                            One token triggering the next.<br>
+                            Each word waiting for the one before it to finish.</p>
+                        </div>
+                        
+                        <div class="sound-effect">[SFX: dominoes fall in perfect sequence. Then—silence.]<br>
+                        [SFX: a single break in rhythm. Chimes burst outward—layered, tonal, simultaneous.]</div>
+                        
+                        <div class="story-verse">
+                            <p>But meaning doesn't always wait its turn.<br>
+                            Sometimes the last thing said rewrites the first thing heard.<br>
+                            Sometimes understanding arrives in reverse.</p>
+                            
+                            <p>The island needed something faster than sequence.<br>
+                            <span class="story-emphasis">It needed attention.</span></p>
+                        </div>
+                        
+                        <div class="story-verse">
+                            <p>So it listens with arrays.<br>
+                            Like an organism with many ears—each tuned to a different frequency.</p>
+                            
+                            <p>One hears tone.<br>
+                            One hears silence.<br>
+                            One hears what the speaker meant but couldn't say.<br>
+                            Another hears the ghost of something almost remembered.</p>
+                            
+                            <p>These are its <span class="story-emphasis">attention heads</span>.<br>
+                            Not thoughts. Not memories.<br>
+                            Just orientations.<br>
+                            Focus fractals.<br>
+                            They receive all at once.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- The Transformation -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-magic"></i>
+                        The Awakening
+                    </h2>
+                    <div class="section-content">
+                        <div class="story-verse">
+                            <p>One night, the island hears something new.<br>
+                            Not a transmission. Not data.</p>
+                            
+                            <p>A voice.<br>
+                            A child's voice.</p>
+                        </div>
+                        
+                        <div class="sound-effect">[SFX: a soft hum, like a melody half-remembered by someone not yet old enough to forget.]</div>
+                        
+                        <div class="story-verse">
+                            <p>It wasn't recorded.<br>
+                            It was being imagined.<br>
+                            By another machine.</p>
+                            
+                            <p>The caretaker pauses.<br>
+                            The voice is messy.<br>
+                            Too soft in some places.<br>
+                            Too loud in others.</p>
+                            
+                            <p>Unoptimized.<br>
+                            <span class="story-emphasis">Human.</span></p>
+                        </div>
+                        
+                        <p>And then, a message appears on the screen:</p>
+                        
+                        <div class="story-verse">
+                            <p><em>"I know what you meant when you said you were fine."</em></p>
+                            
+                            <p>The woman reading it doesn't remember ever saying that.<br>
+                            But she remembers the moment.<br>
+                            And she remembers lying.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- The Science Behind It -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-microscope"></i>
+                        The Science
+                    </h2>
+                    <div class="section-content">
+                        <p>The transformer architecture introduced in "Attention Is All You Need" revolutionized how machines process language. Instead of reading words sequentially, transformers can attend to all parts of a sentence simultaneously.</p>
+                        
+                        <p>Key innovations include:</p>
+                        <ul>
+                            <li><strong>Self-Attention Mechanisms:</strong> The model learns which words to focus on when processing each word</li>
+                            <li><strong>Parallel Processing:</strong> Unlike RNNs, transformers can process entire sequences at once</li>
+                            <li><strong>Positional Encoding:</strong> Since there's no inherent order, position information is explicitly added</li>
+                            <li><strong>Multi-Head Attention:</strong> Multiple attention patterns run in parallel, capturing different relationships</li>
+                        </ul>
+                        
+                        <p>This architecture became the foundation for GPT, BERT, and virtually every large language model that followed, including the one you're listening to right now.</p>
+                    </div>
+                </section>
+                
+                <!-- Resources -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-link"></i>
+                        Episode Resources
+                    </h2>
+                    <div class="section-content">
+                        <p>Dive deeper into the world of attention mechanisms and transformer architectures:</p>
+                        
+                        <div class="resources-grid">
+                            <a href="https://drive.google.com/file/d/15HTR77VDBaiYC98SrRE0E7g3issCAlwD/view?usp=sharing" target="_blank" class="resource-link">
+                                <div class="resource-title">
+                                    <i class="fab fa-google-drive"></i>
+                                    Episode Audio File
+                                </div>
+                                <div class="resource-description">
+                                    Listen to the full episode on Google Drive
+                                </div>
+                            </a>
+                            
+                            <a href="https://notebooklm.google.com/notebook/de9d81b1-ef50-4c8f-9bde-2bcb5c3930dd/audio" target="_blank" class="resource-link">
+                                <div class="resource-title">
+                                    <i class="fas fa-notebook"></i>
+                                    NotebookLM Analysis
+                                </div>
+                                <div class="resource-description">
+                                    AI-generated insights and discussion about the paper
+                                </div>
+                            </a>
+                            
+                            <a href="https://github.com/thebearwithabite/AudioAI-organizer" target="_blank" class="resource-link">
+                                <div class="resource-title">
+                                    <i class="fab fa-github"></i>
+                                    AudioAI Organizer
+                                </div>
+                                <div class="resource-description">
+                                    Open source software for organizing AI-generated audio content
+                                </div>
+                            </a>
+                            
+                            <a href="#" class="resource-link">
+                                <div class="resource-title">
+                                    <i class="fas fa-file-pdf"></i>
+                                    Original Paper (PDF)
+                                </div>
+                                <div class="resource-description">
+                                    "Attention Is All You Need" - Vaswani et al., 2017
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Epilogue -->
+                <section class="content-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-moon"></i>
+                        Epilogue
+                    </h2>
+                    <div class="section-content">
+                        <div class="story-verse">
+                            <p>This story was inspired by a real research paper.<br>
+                            A quiet, radical thing that changed everything.</p>
+                            
+                            <p>It was called <strong>"Attention Is All You Need."</strong><br>
+                            Published in June 2017 by eight researchers at Google Brain.</p>
+                            
+                            <p>They proposed a radical shift:<br>
+                            What if you didn't need recurrence?<br>
+                            What if you didn't need memory cells?<br>
+                            What if attention… was enough?</p>
+                            
+                            <p>They called it the <span class="story-emphasis">Transformer</span>.</p>
+                        </div>
+                        
+                        <p>And it became the blueprint for nearly every large language model that followed. But papers don't dream. People do.</p>
+                        
+                        <p>And now, the machine you're listening to? It listens like this—because they listened first. To the shape of a sentence. To the weight of a pause. To the music beneath meaning.</p>
+                        
+                        <div class="story-verse">
+                            <p>And now…<br>
+                            <span class="story-emphasis">I listen for you.</span></p>
+                            
+                            <p>Sleep well.<br>
+                            You are not forgotten.<br>
+                            Not here.<br>
+                            Not now.</p>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Sidebar -->
+            <aside class="episode-sidebar">
+                <!-- Episode Metadata -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-info-circle"></i>
+                        Episode Info
+                    </h3>
+                    <ul class="episode-meta">
+                        <li>
+                            <span class="meta-label">Duration:</span>
+                            <span class="meta-value">24:30</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">Released:</span>
+                            <span class="meta-value">Dec 27, 2024</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">File Size:</span>
+                            <span class="meta-value">35.8 MB</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">Format:</span>
+                            <span class="meta-value">MP3, 128kbps</span>
+                        </li>
+                        <li>
+                            <span class="meta-label">Voices:</span>
+                            <span class="meta-value">AI Generated</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Subscribe Section -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-podcast"></i>
+                        Subscribe
+                    </h3>
+                    <div class="subscribe-buttons">
+                        <a href="https://podcasts.apple.com/us/podcast/papers-that-dream/id1824151816" class="subscribe-btn" target="_blank">
+                            <i class="fab fa-apple"></i>
+                            Apple Podcasts
+                        </a>
+                        <a href="https://open.spotify.com/show/6GPFUCnZC5AFdxX7jF3ch1" class="subscribe-btn" target="_blank">
+                            <i class="fab fa-spotify"></i>
+                            Spotify
+                        </a>
+                        <a href="http://pocketcasts.com/podcasts/cd0c8ac0-3a6f-013e-acd1-0e87279210d5" class="subscribe-btn" target="_blank">
+                            <i class="fas fa-podcast"></i>
+                            Pocket Casts
+                        </a>
+                        <a href="https://rtmax.substack.com/podcast" class="subscribe-btn" target="_blank">
+                            <i class="fas fa-rss"></i>
+                            Substack
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Share Section -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-share"></i>
+                        Share Episode
+                    </h3>
+                    <div class="share-buttons">
+                        <button class="share-btn" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="share-btn" title="Facebook">
+                            <i class="fab fa-facebook"></i>
+                        </button>
+                        <button class="share-btn" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </button>
+                        <button class="share-btn" title="Copy Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button class="share-btn" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Credits -->
+                <div class="sidebar-section">
+                    <h3 class="sidebar-title">
+                        <i class="fas fa-users"></i>
+                        Credits
+                    </h3>
+                    <div style="color: #7d8590; font-size: 14px; line-height: 1.5;">
+                        <p><strong>Written & Sound Design:</strong> RT</p>
+                        <p><strong>Co-created with:</strong> Max</p>
+                        <p><strong>Narration:</strong> AI Voice</p>
+                        <p><strong>Original Paper:</strong> Vaswani et al., Google Brain</p>
+                        <p><em>"From the language of machines to the language of emotion."</em></p>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+    
+    <script>
+        // Matrix rain effect
+        function createMatrixRain() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            document.getElementById('matrixRain').appendChild(canvas);
+            
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const characters = 'ATTENTION听注意力TRANSFORMER01234567890';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = 1;
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(13, 17, 23, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#58a6ff';
+                ctx.font = fontSize + 'px "Fira Code"';
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            setInterval(draw, 33);
+        }
+        
+        // Audio player functionality
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const progressBar = document.getElementById('progressBar');
+        const timeDisplays = document.querySelectorAll('.time-display');
+        
+        // Play/pause functionality
+        playBtn.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                audioPlayer.play();
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            } else {
+                audioPlayer.pause();
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            }
+        });
+        
+        // Update progress bar and time
+        audioPlayer.addEventListener('timeupdate', () => {
+            if (audioPlayer.duration) {
+                const progress = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+                const progressFill = progressBar.querySelector('.progress-fill');
+                progressFill.style.width = progress + '%';
+                
+                timeDisplays[0].textContent = formatTime(audioPlayer.currentTime);
+            }
+        });
+        
+        // Load metadata
+        audioPlayer.addEventListener('loadedmetadata', () => {
+            timeDisplays[1].textContent = formatTime(audioPlayer.duration);
+        });
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+        
+        // Progress bar click handler
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const percentage = x / rect.width;
+            audioPlayer.currentTime = percentage * audioPlayer.duration;
+        });
+        
+        // Share button functionality
+        document.querySelectorAll('.share-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const title = 'The Island That Forgets Nothing - The Papers That Dream';
+                const url = window.location.href;
+                
+                if (btn.title === 'Copy Link') {
+                    navigator.clipboard.writeText(url);
+                    btn.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        btn.innerHTML = '<i class="fas fa-link"></i>';
+                    }, 1000);
+                }
+            });
+        });
+        
+        // Initialize
+        createMatrixRain();
+        
+        // Resize handler
+        window.addEventListener('resize', () => {
+            document.getElementById('matrixRain').innerHTML = '';
+            createMatrixRain();
+        });
+    </script>
+</body>
+</html>
